@@ -27,9 +27,9 @@ function App() {
             {/* <Link to="/events">Events</Link> */}
           </div>
           <div className="social-links-nav">
-            <a href="https://github.com/ethereum" target="_blank" rel="noopener noreferrer"><GitHub /></a>
-            <a href="https://twitter.com/ethereum" target="_blank" rel="noopener noreferrer"><Twitter /></a>
-            <a href="https://www.linkedin.com/company/ethereum" target="_blank" rel="noopener noreferrer"><LinkedIn /></a>
+            <a href="https://github.com/ISM-Onchain" target="_blank" rel="noopener noreferrer"><GitHub /></a>
+            <a href="https://x.com/ism_onChain" target="_blank" rel="noopener noreferrer"><Twitter /></a>
+            <a href="https://www.linkedin.com/company/cyberlabs-iitism/posts/?feedView=all" target="_blank" rel="noopener noreferrer"><LinkedIn /></a>
           </div>
         </nav>
 
