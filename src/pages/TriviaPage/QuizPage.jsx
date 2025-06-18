@@ -21,24 +21,16 @@ const QuizPage = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [userScore, setUserScore] = useState(null);
   const navigate = useNavigate();
-  
-  // Fetch questions
+
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
-        console.log("Fetching questions...");
         const db = getDatabase();
         const questionsRef = ref(db, 'questions');
-        console.log("Database reference:", questionsRef);
-        
         const snapshot = await get(questionsRef);
-        console.log("Got snapshot", snapshot.exists());
-        
+
         if (snapshot.exists()) {
           const questionsData = snapshot.val();
-          console.log("Questions data:", questionsData);
-          
-          // Convert to array and shuffle
           const questionsArray = Object.keys(questionsData).map(key => ({
             id: key,
             ...questionsData[key]
@@ -49,8 +41,6 @@ const QuizPage = () => {
           } else {
             console.error("Questions array is empty!");
           }
-          // Use the utility function to shuffle questions
-          
         } else {
           console.error("No questions found in database!");
         }
@@ -102,101 +92,113 @@ const QuizPage = () => {
     });
     return score;
   };
-  
-  // Submit quiz
-  
-const submitQuiz = async () => {
-  try {
-    console.log("Submitting quiz...");
-    clearInterval(timerInterval);
-    
-    if (questions.length === 0) {
-      console.error("No questions to score!");
-      navigate('/trivia/solutions');
-      return;
-    }
-    
-    // Calculate score
-    const score = calculateScore();
-    console.log("Score:", score, "out of", questions.length);
-    console.log("User answers:", userAnswers);
-    
-    // Save score to database
-    const auth = getAuth();
-    const userId = auth.currentUser?.uid;
-    
-    if (!userId) {
-      console.error("No user ID found!");
-      return;
-    }
-    
-    const db = getDatabase();
-    
-    // Get username
-    let username = "Anonymous";
-    try {
-      const userRef = ref(db, `users/${userId}`);
-      const userSnapshot = await get(userRef);
-      if (userSnapshot.exists()) {
-        username = userSnapshot.val().username || auth.currentUser.email || "Anonymous";
-      }
-    } catch (err) {
-      console.error("Error fetching username:", err);
-    }
-    
-    // Save detailed results including answers
-    const quizResultData = {
-      username,
-      email: auth.currentUser.email,
-      score,
-      time: timer,
-      createdAt: Date.now(),
-      answers: userAnswers
-    };
-    
-    console.log("Saving quiz result data:", quizResultData);
-    
-    // Save to quizResults/<userId>
-    await set(ref(db, `quizResults/${userId}`), quizResultData);
-    console.log("Quiz results saved successfully");
-    
-    // Save to scores collection for leaderboard
-    const scoreData = {
-      userId,
-      username,
-      score,
-      time: timer,
-      timestamp: Date.now()
-    };
-    
-    await push(ref(db, 'scores'), scoreData);
-    console.log("Score added to leaderboard");
-    
-    // Fetch leaderboard
-    const scoresRef = ref(db, 'scores');
-    const scoresSnapshot = await get(scoresRef);
-    
-    let sortedScores = [];
-    
-    if (scoresSnapshot.exists()) {
-      // Use the utility function to sort leaderboard
-      const scores = Object.values(scoresSnapshot.val());
-      sortedScores = sortLeaderboard(scores);
-      console.log("Leaderboard data:", sortedScores.slice(0, 10));
-    } else {
-      console.log("No existing scores found");
-    }
-    
-    setLeaderboardData(sortedScores.slice(0, 10));  // Top 10
-    setUserScore(scoreData);
-    setCurrentSection('leaderboard');
-  } catch (error) {
-    console.error("Error submitting quiz:", error);
-    alert("There was an error submitting your quiz. Please try again.");
-  }
-};
 
-  // View solutions handler
+  const submitQuiz = async () => {
+    try {
+      clearInterval(timerInterval);
+
+      if (questions.length === 0) {
+        console.error("No questions to score!");
+        navigate('/trivia/solutions');
+        return;
+      }
+
+      const score = calculateScore();
+      const auth = getAuth();
+      const userId = auth.currentUser?.uid;
+
+      if (!userId) {
+        console.error("No user ID found!");
+        return;
+      }
+
+      const db = getDatabase();
+
+      let username = "Anonymous";
+      try {
+        const userRef = ref(db, `users/${userId}`);
+        const userSnapshot = await get(userRef);
+        if (userSnapshot.exists()) {
+          username = userSnapshot.val().username || auth.currentUser.email || "Anonymous";
+        }
+      } catch (err) {
+        console.error("Error fetching username:", err);
+      }
+
+      const quizResultData = {
+        username,
+        email: auth.currentUser.email,
+        score,
+        time: timer,
+        createdAt: Date.now(),
+        answers: userAnswers
+      };
+
+      await set(ref(db, `quizResults/${userId}`), quizResultData);
+
+      const scoreData = {
+        uid: userId,
+        username,
+        score,
+        time: timer,
+        timestamp: Date.now()
+      };
+
+      await push(ref(db, 'scores'), scoreData);
+
+      const scoresRef = ref(db, 'scores');
+      const scoresSnapshot = await get(scoresRef);
+
+      let sortedScores = [];
+
+      if (scoresSnapshot.exists()) {
+        const allScores = Object.values(scoresSnapshot.val());
+        const firstAttemptsMap = new Map();
+
+        allScores.forEach(entry => {
+          const { uid, timestamp } = entry;
+          if (!firstAttemptsMap.has(uid)) {
+            firstAttemptsMap.set(uid, entry);
+          } else {
+            const existing = firstAttemptsMap.get(uid);
+            if (timestamp < existing.timestamp) {
+              firstAttemptsMap.set(uid, entry);
+            }
+          }
+        });
+
+        const firstAttempts = Array.from(firstAttemptsMap.values());
+        sortedScores = sortLeaderboard(firstAttempts);
+
+        const top10 = sortedScores.slice(0, 10);
+        const userInTop10 = top10.some(entry => entry.uid === scoreData.uid);
+
+        let finalLeaderboard = [];
+        if (userInTop10) {
+          finalLeaderboard = top10;
+        } else {
+          const userEntry = sortedScores.find(entry => entry.uid === scoreData.uid);
+          if (userEntry) {
+            finalLeaderboard = [...top10.slice(0, 9), userEntry];
+          } else {
+            finalLeaderboard = top10.slice(0, 10);
+          }
+        }
+
+        setLeaderboardData(finalLeaderboard);
+      } else {
+        console.log("No existing scores found");
+        setLeaderboardData([]);
+      }
+
+      setUserScore(scoreData);
+      setCurrentSection('leaderboard');
+    } catch (error) {
+      console.error("Error submitting quiz:", error);
+      alert("There was an error submitting your quiz. Please try again.");
+    }
+  };
+
   const handleViewSolutions = () => {
     navigate('/trivia/solutions');
   };
@@ -222,7 +224,6 @@ const submitQuiz = async () => {
       transition: { duration: 0.3 }
     }
   };
-  
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
@@ -231,7 +232,6 @@ const submitQuiz = async () => {
       transition: { type: 'spring', stiffness: 100 }
     }
   };
-  
   return (
     <div className="quiz-page-container">
       <AnimatePresence mode="wait">
@@ -290,23 +290,26 @@ const submitQuiz = async () => {
             exit="exit"
             variants={containerVariants}
           >
-            <div className="quiz-header">
-              <motion.div className="timer" variants={itemVariants}>
-                Time: {formatTime(timer)}
-              </motion.div>
-              <motion.div className="question-tracker" variants={itemVariants}>
-                {questions.map((q, index) => (
-                  <div 
-                    key={q.id}
-                    id={`tracker-${q.id}`}
-                    className={`tracker-circle ${userAnswers[q.id] ? 'attempted' : ''} ${q.type === 'fib' ? 'fib-type' : 'mcq-type'}`}
-                  >
-                    {index + 1}
-                  </div>
-                ))}
-              </motion.div>
-            </div>
-            
+            <div className="quiz-header-wrapper">
+  <div className="quiz-header">
+    <motion.div className="timer" variants={itemVariants}>
+      Time: {formatTime(timer)}
+    </motion.div>
+    <motion.div className="question-tracker" variants={itemVariants}>
+      {questions.map((q, index) => (
+        <div 
+          key={q.id}
+          id={`tracker-${q.id}`}
+          className={`tracker-circle ${userAnswers[q.id] ? 'attempted' : ''} ${q.type === 'fib' ? 'fib-type' : 'mcq-type'}`}
+        >
+          {index + 1}
+        </div>
+      ))}
+    </motion.div>
+  </div>
+</div>
+
+
             <motion.form className="quiz-form" variants={containerVariants}>
               {questions.map((question, qIndex) => (
                 <QuizComponent 
@@ -317,12 +320,11 @@ const submitQuiz = async () => {
                   selectedAnswer={userAnswers[question.id]}
                 />
               ))}
-              
               <motion.button 
                 type="button"
                 onClick={submitQuiz}
                 className="submit-button"
-                 whileHover={{ 
+                whileHover={{ 
                   scale: 1.05,
                   boxShadow: '0 8px 25px rgba(127, 127, 213, 0.3)'
                 }}
@@ -334,7 +336,6 @@ const submitQuiz = async () => {
             </motion.form>
           </motion.div>
         )}
-        
         {currentSection === 'leaderboard' && (
           <Leaderboard 
             leaderboardData={leaderboardData}

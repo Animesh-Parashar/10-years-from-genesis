@@ -45,6 +45,18 @@
   margin-bottom: 2rem;
 }
 
+.quiz-header-wrapper {
+  position: sticky;
+  top: 60px; /* adjust to your navbar height */
+  z-index: 999;
+  background-color: rgba(36, 36, 62, 0.9);
+  padding: 5px;
+  border-radius: 12px;
+  padding-top: 30px;
+}
+
+
+
 .timer {
   background: rgba(36, 36, 62, 0.7);
   border: 2px solid #7f7fd5;

@@ -156,6 +156,7 @@ const HomePage = () => {
             whileTap={{ scale: 0.95 }}
             variants={itemVariants}
             style={{ transitionDelay: '0.7s' }}
+            onClick={() => window.location.href = "../about"}
           >
             Discover More
           </motion.button>
@@ -267,6 +268,7 @@ const HomePage = () => {
           className="cta-button large-cta"
           whileHover={{ scale: 1.05, backgroundColor: "#86a8e7", color: "#1a1a2e" }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => window.location.href = "../trivia"}
         >
           Get Involved
         </motion.button>
