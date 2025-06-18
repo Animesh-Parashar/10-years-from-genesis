@@ -1,9 +1,8 @@
 import React from "react";
 import "./AboutusPage.css";
-import { motion } from "framer-motion";
 import EthereumLogo from '../../assets/Eth-logo.svg';
 import Card from "./card";
-import { div } from "framer-motion/client";
+
 
 
 const achievements=[
@@ -99,21 +98,6 @@ const achievements=[
   },
 ]
 
-const pointVariants = {
-  hidden: (index) => ({
-    opacity: 0,
-    x: -50 
-  }),
-  visible: (index) => ({
-    opacity: 1,
-    x: 0,
-    transition: {
-      type: "spring",
-      stiffness: 50,
-      delay: 0.1 * index
-    }
-  })
-};
 
 const AboutusPage = () => {
   return (
@@ -121,22 +105,28 @@ const AboutusPage = () => {
     <div className="main--containner">
       <h1>❓About Us</h1>
       <div className="content1">
+
+        <p>
+          <strong>Indian Institute of Technology (Indian School of Mines), Dhanbad, commonly known as IIT(ISM) Dhanbad</strong>, is one of India’s premier engineering and research institutes. Established in 1926 and elevated to an IIT in 2016, the institute has a rich legacy in technical education and scientific innovation. With a dynamic student community and a growing focus on emerging technologies, IIT(ISM) continues to foster a culture of curiosity, interdisciplinary exploration, and forward-thinking development.
+        </p>
         <p> We are a team of individuals from multiple disciplines, driven by the desire of implementing solutions ubounded by the limits of knowledge or techical know-how. 
           Cyberlabs is the official programming club of IIT(ISM) Dhanbad which acts as a platform for the people enthusiastic about technology to work together.
           It was founded post inpiration on the footsteps of MIT MEDIA LABS by an enthusiatic and ticking learner 
           who discovered a scope beyond rote learning and plain-vanilla implementations of the common problems and sci-fi solutions.</p>
+          <p>
+            We, at Cyberlabs work in many feilds, namely, Web, Android, Machine learning and Deep learning, Blockchain, Information Security and UX. Regular sessions are held for each field. The main aim of our club is to promote a diverse product development as well as R&D Culture amongst the students of IIT(ISM), Dhanbad
+          </p>
         <p>
-          At <strong>Cyberlabs</strong>, we are a vibrant community of
-          blockchain visionaries,builders and enthusiasts united by a shared passion  for decentralized technology
-          and the future of the web. Our members explore everything from smart contracts and DeFi to zk-proofs,pushing boundaries
+          Within <strong>Cyberlabs, the Blockchain division</strong> stands as a vibrant community of visionaries, builders and enthusiasts united by a shared passion  for decentralized technology
+          and the future of the web. Our members explore everything from smart contracts and DeFi to zk-proofs, pushing boundaries
           with every block we build.</p>
           <p><strong> Cyberlabs is where future Web3 leaders are forged.</strong></p>
         
         
         
-      </div>
+      </div><br />
       <div className="content2">
-       <h2>🎯Our Achievements</h2>
+       <h1>🎯Achievements</h1>
        <div className="cards-">
         {
            achievements.map((achievement, index) => (
