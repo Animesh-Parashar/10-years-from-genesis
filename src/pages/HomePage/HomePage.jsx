@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import './HomePage.css';
 import EthereumLogo from '../../assets/Eth-logo2.svg';
 import {
@@ -20,7 +20,6 @@ const HomePage = () => {
   });
 
   useEffect(() => {
-
     const targets = { dapps: 1500, developers: 50000, transactions: 1200000 };
     Object.keys(targets).forEach(key => {
       let current = 0;
@@ -42,17 +41,14 @@ const HomePage = () => {
       title: 'A Decade of Innovation!',
       description: 'Celebrating 10 years of decentralized progress and looking to the future.',
       icon: <PeopleAltIcon />,
-   
     },
     {
       year: '2022',
       title: 'The Merge',
       description: 'Ethereum transitions from Proof-of-Work to Proof-of-Stake, drastically reducing energy consumption.',
       icon: <TimelineIcon />,
-    
     },
     {
-      
       year: '2021',
       title: 'NFT Mania',
       description: 'Non-Fungible Tokens enter mainstream consciousness, revolutionizing digital ownership.',
@@ -65,21 +61,18 @@ const HomePage = () => {
       icon: <CodeIcon />,
     },
     {
-      
       year: '2017',
       title: 'ICO Boom & ERC-20',
       description: 'The ERC-20 token standard fuels a wave of Initial Coin Offerings, showcasing Ethereum\'s versatility.',
       icon: <TrendingUpIcon />,
     },
     {
-      
       year: '2015',
       title: 'Ethereum Genesis',
       description: 'The Ethereum network officially launches, enabling smart contracts and dApps.',
       icon: <RocketLaunchIcon/>
     },
   ];
-
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -131,7 +124,6 @@ const HomePage = () => {
     },
   };
 
-
   return (
     <motion.div
       className="homepage-container"
@@ -143,6 +135,8 @@ const HomePage = () => {
       <motion.section className="hero-section">
         <motion.div className="hero-content" variants={itemVariants}>
           <motion.h1 variants={heroTextVariants}>
+            <span className="institute-name">IIT(ISM) Dhanbad Presents</span>
+            <br />
             Celebrating <span className="highlight">10 Years</span> of Ethereum
           </motion.h1>
           <motion.p variants={heroTextVariants} style={{ transitionDelay: '0.1ms' }}>
@@ -183,7 +177,6 @@ const HomePage = () => {
         </motion.div>
       </motion.section>
 
-
       <motion.section className="stats-section" variants={itemVariants}>
         <motion.h2>Ethereum by the Numbers</motion.h2>
         <div className="stats-grid">
@@ -216,7 +209,6 @@ const HomePage = () => {
           </motion.div>
         </div>
       </motion.section>
-
    
       <motion.section className="milestones-section" variants={itemVariants}>
         <motion.h2>Key Milestones</motion.h2>
@@ -256,7 +248,6 @@ const HomePage = () => {
           ))}
         </div>
       </motion.section>
-
      
       <motion.section className="future-section" variants={itemVariants}>
         <h2>The Next Decade of Ethereum</h2>
