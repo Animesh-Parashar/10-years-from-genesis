@@ -1,148 +1,132 @@
 .card-wrapper {
   display: flex;
- 
+  justify-content: center;
   margin: 20px;
+  perspective: 1000px; /* Needed for 3D flip */
 }
 
 .cardabout {
-  position: relative;
   width: 300px;
   height: 300px;
-  /* background: linear-gradient(-45deg, #f89b29 0%, #ff0f7b 100%); */
- background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100% 100%; 
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.cardabout:hover .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
   border-radius: 10px;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
 }
 
-.cardabout svg {
+.card-front {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%; 
+}
+
+.card-front svg {
   width: 48px;
   fill: #333;
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
 }
 
-.cardabout:hover {
-  transform: rotate(-5deg) scale(1.1);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-/* .card__content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-45deg);
-  width: 100%;
-  height: 100%;
-  padding: 20px;
+.card-back {
+   background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  color: white;
+  transform: rotateY(180deg);
+  padding: 0; /* remove padding here */
   box-sizing: border-box;
-  background-color: #fff;
-  opacity: 0;
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
-} */
-.card__content {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-45deg);
-  width: 100%;
-  height: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-  background-color: #fff;
-  opacity: 0;
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
-  overflow-y: auto; /* ✅ add vertical scroll */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  
 }
-
-.cardabout:hover .card__content {
-  transform: translate(-50%, -50%) rotate(0deg);
-  opacity: 1;
+.scrollable-content {
+  padding: 20px;
+  overflow-y: auto;
+  height: 100%;
+  box-sizing: border-box;
+}
+/* Scrollbar Styling */
+.card-back::-webkit-scrollbar {
+  width: 8px;
+}
+.card-back::-webkit-scrollbar-track {
+  background: transparent;
+}
+.card-back::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+.card-back::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+.card-back .scrollable-content::-webkit-scrollbar {
+  width: 8px;
+}
+.card-back .scrollable-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.card-back .scrollable-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
 }
 
 .card__title {
-  margin: 0;
-  margin-bottom: 10px;
+  margin: 0 0 10px;
   font-size: 24px;
-  color: #333;
   font-weight: 700;
-}
-.card__subtitle
-{
-    color: #333;
-}
-.card__winner
-{
-    color: #333;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
+.card__subtitle,
+.card__winner,
 .card__description {
-  margin: 10px 0 0;
-  font-size: 14px;
-  color: #333;
-  line-height: 1.4;
+    font-size: 14px;
+  line-height: 1.5;
+  margin: 6px 0;
+  color: #eee;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
 
-.cardabout:hover svg {
-  scale: 0;
-  transform: rotate(-45deg);
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .cardabout {
+    width: 350px;
+    height: 350px;
+  }
 }
 
-@media (max-width: 1200px) 
-{
-     .cardabout {
-  position: relative;
-  width: 350px;
-  height: 350px;
-  background: linear-gradient(-45deg, #f89b29 0%, #ff0f7b 100%);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100% 100%; 
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
-    }
+@media (max-width: 900px) {
+  .cardabout {
+    width: 400px;
+    height: 320px;
+  }
 }
-@media (max-width: 900px) 
-{
-    .cardabout {
-  position: relative;
-  width: 400px;
-  height: 320px;
-  background: linear-gradient(-45deg, #f89b29 0%, #ff0f7b 100%);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100% 100%; 
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
-    }
-}
-@media (max-width: 600px)
-{
-    .cardabout {
-  position: relative;
-  width: 250px;
-  height: 250px;
-  background: linear-gradient(-45deg, #f89b29 0%, #ff0f7b 100%);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100% 100%; 
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
-}
+
+@media (max-width: 600px) {
+  .cardabout {
+    width: 250px;
+    height: 250px;
+  }
 }
